@@ -7,7 +7,8 @@ import math
 STAKES = {
     1: 100,
     3: 290,
-    10: 460
+    10: 460,
+    12: 440,
 }
 
 # The rate that daily earning
@@ -23,7 +24,8 @@ MINIMUM_STAKE_VALUE = 100
 START_DATE =  datetime(2023, 12, 19)
 
 # End date for add profit to stake
-END_DATE = datetime(2024, 8, 25)
+# END_DATE = START_DATE+ timedelta(160)
+END_DATE = datetime(2024, 4, 30)
 
 # get total stake value at specific day
 def caculate_total_stake(stakes, day_earning):
@@ -67,6 +69,7 @@ for day in range(1, incremental_time):
     dataset = {
         'stake': total_stake_value,
         'days': day,
+        'minimum_day_for_next_stake': math.ceil(MINIMUM_STAKE_VALUE/profit_in_one_day),
         'profit': profit_in_one_day,
     }
     incremental_datasets.append(dataset)
@@ -77,10 +80,10 @@ end_incremental_time = START_DATE+timedelta(days=day)
 earning_datasets = []
 day_earning = incremental_time+1
 start_earning_time = START_DATE+timedelta(days=day_earning)
-total_stake_value = caculate_total_stake(stakes, day_earning)
 total_profit = 0
 
-while(total_stake_value > 0):
+while True:
+    total_stake_value = caculate_total_stake(stakes, day_earning)
     profit_in_one_day = calculate_profit(total_stake_value, RATE_DAILY, 1)
     total_profit += profit_in_one_day
     dataset = {
@@ -90,7 +93,8 @@ while(total_stake_value > 0):
     }
     earning_datasets.append(dataset)
     day_earning += 1
-    total_stake_value = caculate_total_stake(stakes, day_earning)
+    if(total_stake_value<=0):
+        break
     
 end_earning_time = START_DATE+timedelta(days=day_earning)
     
@@ -119,7 +123,7 @@ def show_incremental_stake_chart():
     plt.plot(days, profits, label='Daily Profit')
     plt.xlabel('Days')
     plt.ylabel('Value($)')
-    plt.title('Profit over Time')
+    plt.title('Daily Profit over Time')
     plt.grid(True)
     # plt.gca().yaxis.set_major_formatter(formatter)
     plt.legend()
@@ -141,7 +145,7 @@ def show_earning_stake_chart():
     plt.ylabel('Value($)')
     plt.title('Stake over Time')
     plt.grid(True)
-    plt.text(0.3, 0.2, 'This Stake = 0 in Day '+str(max(days)), horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes, weight='bold')
+    plt.text(0.3, 0.2, f'The Stake Value = 0 and will end in Day {str(max(days))}({end_earning_time.strftime('%Y-%m-%d')})', horizontalalignment='center', verticalalignment='center', transform=plt.gca().transAxes, weight='bold')
     plt.legend()
 
     plt.subplot(224)
