@@ -24,7 +24,7 @@ MINIMUM_STAKE_VALUE = 100
 START_DATE =  datetime(2023, 12, 19)
 
 # End date for add profit to stake
-END_DATE = START_DATE+ timedelta(160)
+END_DATE =datetime(2024, 4, 30)
 
 # get total stake value at specific day
 def caculate_total_stake(stakes, day_earning):
