@@ -19,7 +19,8 @@ STAKE_EXPIRED = 250
 
 # Minimum value for new stake
 MINIMUM_STAKE_VALUE = 100
-
+FEE_STAKE = 0.03
+FEE_CLAIM = 0.05
 # The start day of the trade, map with first key of stakes
 START_DATE =  datetime(2023, 12, 19)
 
@@ -62,8 +63,8 @@ for day in range(1, incremental_time):
     total_stake_value = caculate_total_stake(stakes, day)
     profit_in_one_day = calculate_profit(total_stake_value, RATE_DAILY, 1)
     total_profit += profit_in_one_day
-    if(total_profit>=MINIMUM_STAKE_VALUE):
-        stakes[day] = total_profit
+    if(total_profit*(1-FEE_STAKE))>=MINIMUM_STAKE_VALUE:
+        stakes[day] = total_profit*(1-FEE_STAKE)
         total_profit = 0
         dataset = {
                 'date': START_DATE+timedelta(days=day),
@@ -84,7 +85,7 @@ total_profit = 0
 
 while True:
     total_stake_value = caculate_total_stake(stakes, day_earning)
-    profit_in_one_day = calculate_profit(total_stake_value, RATE_DAILY, 1)
+    profit_in_one_day = calculate_profit(total_stake_value, RATE_DAILY, 1)*(1-FEE_CLAIM)
     total_profit += profit_in_one_day
     dataset = {
         'date': START_DATE+timedelta(days=day_earning),

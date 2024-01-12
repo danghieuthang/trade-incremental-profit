@@ -65,8 +65,8 @@ for day in range(1, incremental_time):
     total_stake_value = caculate_total_stake(stakes, day)
     profit_in_one_day = calculate_profit(total_stake_value, RATE_DAILY, 1)*(1-FEE_CLAIM)
     total_profit += profit_in_one_day
-    if(total_profit>=(MINIMUM_STAKE_VALUE+ MINIMUM_STAKE_VALUE*FEE_STAKE)):
-        stakes[day] = total_profit-(MINIMUM_STAKE_VALUE*FEE_STAKE)
+    if(total_profit*(1-FEE_STAKE)>=MINIMUM_STAKE_VALUE):
+        stakes[day] = total_profit*(1-FEE_STAKE)
         total_profit = 0
     dataset = {
         'stake': total_stake_value,
